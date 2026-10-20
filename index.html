@@ -17,10 +17,16 @@
     }));
     const stream = new Blob(chunks).stream().pipeThrough(new DecompressionStream("gzip"));
     const html = await new Response(stream).text();
-    document.open();
-    document.write(html);
-    document.close();
-    document.title = "Luzaga · Visor 3D";
+    const frame = document.createElement("iframe");
+    frame.title = "Visor 3D de Luzaga";
+    frame.allowFullscreen = true;
+    frame.style.cssText = "position:fixed;inset:0;width:100%;height:100%;border:0;background:#282828";
+    frame.src = URL.createObjectURL(new Blob([html], {type:"text/html;charset=utf-8"}));
+    frame.addEventListener("load", () => {
+      const loading = document.querySelector("main");
+      if (loading) loading.remove();
+    }, {once:true});
+    document.body.appendChild(frame);
   } catch (error) {
     console.error(error);
     const status = document.getElementById("status");
