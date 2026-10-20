@@ -9,6 +9,14 @@
 <body><main><h1>Luzaga · Visor 3D</h1><p id="status" role="status">Cargando el modelo 3D…</p><noscript>Activa JavaScript para abrir el visor.</noscript></main>
 <script>(async () => {
   try {
+    const probeCanvas = document.createElement("canvas");
+    const probeContext = probeCanvas.getContext("webgl2") || probeCanvas.getContext("webgl");
+    if (!probeContext) {
+      document.getElementById("status").textContent = "Este navegador no permite mostrar gráficos 3D (WebGL). Abre este enlace en un navegador con aceleración gráfica activada.";
+      return;
+    }
+    const releaseProbe = probeContext.getExtension("WEBGL_lose_context");
+    if (releaseProbe) releaseProbe.loseContext();
     const files = ["viewer.part000","viewer.part001","viewer.part002","viewer.part003","viewer.part004","viewer.part005","viewer.part006","viewer.part007","viewer.part008","viewer.part009","viewer.part010","viewer.part011","viewer.part012","viewer.part013","viewer.part014","viewer.part015","viewer.part016","viewer.part017","viewer.part018","viewer.part019","viewer.part020","viewer.part021","viewer.part022"];
     const chunks = await Promise.all(files.map(async (file) => {
       const response = await fetch(new URL(file, document.baseURI));
